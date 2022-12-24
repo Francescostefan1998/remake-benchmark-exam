@@ -5,7 +5,7 @@ import {
   saveProductsAvatar,
   getProducts,
   writeProducts,
-} from "../../lib/fs-tools";
+} from "../../lib/fs-tools.js";
 
 const filesRouter = express.Router();
 
@@ -43,7 +43,7 @@ filesRouter.post(
   }
 );
 
-filesRouter.post(
+/*filesRouter.post(
   "/multiple",
   multer().array("avatars"),
   async (req, res, next) => {
@@ -59,6 +59,6 @@ filesRouter.post(
       next(error);
     }
   }
-);
+);*/
 
 export default filesRouter;

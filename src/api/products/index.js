@@ -1,14 +1,14 @@
 import express from "express";
 import uniqid from "uniqid";
 import httpErrors from "http-errors";
-import { checksProductsSchema, triggerBadRequest } from "./validator.js";
+//import { checksProductsSchema, triggerBadRequest } from "./validator.js";
 import { getProducts, writeProducts } from "../../lib/fs-tools.js";
 
 const { NotFound, Unauthorized, BadRequest } = httpErrors;
 
-const productRouter = express.Router();
+const productsRouter = express.Router();
 
-productRouter.post(
+productsRouter.post(
   "/",
 
   async (req, res, next) => {
@@ -28,7 +28,7 @@ productRouter.post(
     }
   }
 );
-productRouter.get("/", async (req, res, next) => {
+productsRouter.get("/", async (req, res, next) => {
   try {
     const productsArray = await getProducts();
     console.log("products array: ", productsArray);
@@ -44,7 +44,7 @@ productRouter.get("/", async (req, res, next) => {
     next(error);
   }
 });
-productRouter.get("/:productId", async (req, res, next) => {
+productsRouter.get("/:productId", async (req, res, next) => {
   try {
     const productsArray = await getProducts();
     const findProduct = productsArray.find(
@@ -53,13 +53,13 @@ productRouter.get("/:productId", async (req, res, next) => {
     if (findProduct) {
       res.send(findProduct);
     } else {
-      next(NotFound(`Product with id ${req.params.productkId} not found!`));
+      next(NotFound(`Product with id ${req.params.productId} not found!`));
     }
   } catch (error) {
     next(error);
   }
 });
-productRouter.put("/:productId", async (req, res, next) => {
+productsRouter.put("/:productId", async (req, res, next) => {
   try {
     const productsArray = await getProducts();
     const index = productsArray.findIndex(
@@ -82,7 +82,7 @@ productRouter.put("/:productId", async (req, res, next) => {
     next(error);
   }
 });
-productRouter.delete("/:productId", async (req, res, next) => {
+productsRouter.delete("/:productId", async (req, res, next) => {
   try {
     const productsArray = await getProducts();
     const index = productsArray.findIndex(
@@ -102,4 +102,4 @@ productRouter.delete("/:productId", async (req, res, next) => {
   }
 });
 
-export default productRouter;
+export default productsRouter;

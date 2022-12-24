@@ -2,15 +2,15 @@ import express from "express";
 import listEndpoints from "express-list-endpoints";
 import cors from "cors";
 import { join } from "path";
-import { productRouter } from "./api/products/index.js";
-import { filesRouter } from "./api/files/index.js";
+import productsRouter from "./api/products/index.js";
+import filesRouter from "./api/files/index.js";
 
 import {
   genericErrorHandler,
   notFoundHandler,
   badRequestHandler,
   unauthorizedHandler,
-} from "./errorHandlers.s";
+} from "./errorHandlers.js";
 
 const server = express();
 
@@ -29,7 +29,7 @@ server.use(cors());
 server.use(loggerMiddleware);
 server.use(express.json());
 
-server.use("/products", loggerMiddleware, productRouter);
+server.use("/products", loggerMiddleware, productsRouter);
 server.use("/files", loggerMiddleware, filesRouter);
 
 server.use(badRequestHandler);

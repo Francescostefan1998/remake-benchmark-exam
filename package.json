@@ -1,12 +1,11 @@
 {
   "name": "remake-benchmark-exam",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon -e js./src/server.js"
+    "dev": "nodemon -e js ./src/server.js"
   },
   "repository": {
     "type": "git",
@@ -33,5 +32,6 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
-  }
+  },
+  "description": ""
 }
