@@ -43,11 +43,32 @@ productsRouter.get("/", async (req, res, next) => {
   try {
     const productsArray = await getProducts();
     console.log(productsArray);
+    if (req.query && req.query.brand) {
+      const filteredProductss = productsArray.filter(
+        (product) => product.brand === req.query.brand
+      );
+
+      if (req.query && req.query.category) {
+        const filteredProducts = filteredProductss.filter(
+          (product) => product.category === req.query.category
+        );
+        res.send(filteredProducts);
+      } else {
+        res.send(filteredProductss);
+      }
+    }
     if (req.query && req.query.category) {
       const filteredProducts = productsArray.filter(
         (product) => product.category === req.query.category
       );
-      res.send(filteredProducts);
+      if (req.query && req.query.brand) {
+        const filteredProductss = filteredProducts.filter(
+          (product) => product.brand === req.query.brand
+        );
+        res.send(filteredProductss);
+      } else {
+        res.send(filteredProducts);
+      }
     } else {
       res.send(productsArray);
     }

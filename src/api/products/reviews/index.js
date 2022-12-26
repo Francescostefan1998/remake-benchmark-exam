@@ -1,13 +1,15 @@
 import express from "express";
 import uniqid from "uniqid";
 import httpErrors from "http-errors";
-//import { checksReviewsSchema, triggerBadRequest } from "./validator.js";
+import { checksReviewsSchema, triggerBadRequestRew } from "./validator.js";
 import { writeProducts, getProducts } from "../../../lib/fs-tools.js";
 
 const { NotFound, Unauthorized, BadRequest } = httpErrors;
 const reviewsRouter = express.Router();
 reviewsRouter.post(
   "/:productId/reviews",
+  checksReviewsSchema,
+  triggerBadRequestRew,
 
   async (req, res, next) => {
     try {
