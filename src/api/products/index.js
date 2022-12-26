@@ -1,8 +1,15 @@
 import express from "express";
 import uniqid from "uniqid";
 import httpErrors from "http-errors";
-//import { checksProductsSchema, triggerBadRequest } from "./validator.js";
-import { getProducts, writeProducts } from "../../lib/fs-tools.js";
+import { checksProductsSchema, triggerBadRequest } from "./validator.js";
+//import filesRouter from "./files.js";
+import multer from "multer";
+import { extname } from "path";
+import {
+  saveProductsAvatar,
+  getProducts,
+  writeProducts,
+} from "../../lib/fs-tools.js";
 
 const { NotFound, Unauthorized, BadRequest } = httpErrors;
 
@@ -11,6 +18,9 @@ const productsRouter = express.Router();
 productsRouter.post(
   "/",
 
+  checksProductsSchema,
+  triggerBadRequest,
+
   async (req, res, next) => {
     try {
       const newProduct = {
@@ -18,6 +28,7 @@ productsRouter.post(
         createdAt: new Date(),
         id: uniqid(),
         reviews: [],
+        imageUrl: "",
       };
       const productsArray = await getProducts();
       productsArray.push(newProduct);
@@ -31,14 +42,14 @@ productsRouter.post(
 productsRouter.get("/", async (req, res, next) => {
   try {
     const productsArray = await getProducts();
-    console.log("products array: ", productsArray);
+    console.log(productsArray);
     if (req.query && req.query.category) {
       const filteredProducts = productsArray.filter(
         (product) => product.category === req.query.category
       );
       res.send(filteredProducts);
     } else {
-      res.send({ productsArray });
+      res.send(productsArray);
     }
   } catch (error) {
     next(error);

@@ -3,7 +3,7 @@ import listEndpoints from "express-list-endpoints";
 import cors from "cors";
 import { join } from "path";
 import productsRouter from "./api/products/index.js";
-import filesRouter from "./api/files/index.js";
+import filesRouter from "./api/products/files.js";
 
 import {
   genericErrorHandler,
@@ -19,7 +19,7 @@ const port = 3001;
 const publicFolderPath = join(process.cwd(), "./public");
 
 const loggerMiddleware = (req, res, next) => {
-  console.log(`Request method ${re.method} --url ${req.url} -- ${new Date()}`);
+  console.log(`Request method ${req.method} --url ${req.url} -- ${new Date()}`);
   req.user = "Dan";
   next();
 };
@@ -28,9 +28,9 @@ server.use(express.static(publicFolderPath));
 server.use(cors());
 server.use(loggerMiddleware);
 server.use(express.json());
+server.use("/products", filesRouter);
 
-server.use("/products", loggerMiddleware, productsRouter);
-server.use("/files", loggerMiddleware, filesRouter);
+server.use("/products", productsRouter);
 
 server.use(badRequestHandler);
 server.use(unauthorizedHandler);
