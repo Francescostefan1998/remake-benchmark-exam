@@ -10,7 +10,7 @@ import {
 const filesRouter = express.Router();
 
 filesRouter.post(
-  "/:productId/single",
+  "/:productId",
   multer().single("avatar"),
   async (req, res, next) => {
     try {
@@ -55,7 +55,7 @@ filesRouter.post(
 );
 
 filesRouter.post(
-  "/multiple",
+  "/:productId/multiple",
   multer().array("avatars"),
   async (req, res, next) => {
     try {

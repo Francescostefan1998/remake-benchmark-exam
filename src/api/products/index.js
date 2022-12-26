@@ -27,8 +27,8 @@ productsRouter.post(
         ...req.body,
         createdAt: new Date(),
         id: uniqid(),
-        reviews: [],
         imageUrl: "",
+        reviews: [],
       };
       const productsArray = await getProducts();
       productsArray.push(newProduct);

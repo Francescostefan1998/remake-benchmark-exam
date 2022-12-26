@@ -14,7 +14,7 @@ console.log("Public folder : ", publicFolderPath);
 console.log("Data folder path: ", dataFolderPath);
 
 const productsJSONPath = join(dataFolderPath, "products.json");
-
+console.log("product json PATH: ", productsJSONPath);
 export const getProducts = () => readJSON(productsJSONPath);
 export const writeProducts = (productsArray) =>
   writeJSON(productsJSONPath, productsArray);

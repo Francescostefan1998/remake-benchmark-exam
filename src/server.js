@@ -4,7 +4,7 @@ import cors from "cors";
 import { join } from "path";
 import productsRouter from "./api/products/index.js";
 import filesRouter from "./api/products/files.js";
-
+import reviewsRouter from "./api/products/reviews/index.js";
 import {
   genericErrorHandler,
   notFoundHandler,
@@ -31,6 +31,7 @@ server.use(express.json());
 server.use("/products", filesRouter);
 
 server.use("/products", productsRouter);
+server.use("/products", reviewsRouter);
 
 server.use(badRequestHandler);
 server.use(unauthorizedHandler);
