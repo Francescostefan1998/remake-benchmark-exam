@@ -12,7 +12,12 @@ import { CloudinaryStorage } from "multer-storage-cloudinary";
 const filesRouter = express.Router();
 
 const cloudUploder = multer({
-  storage: new CloudinaryStorage({ cloudinary }),
+  storage: new CloudinaryStorage({
+    cloudinary,
+    params: {
+      folder: "fs0422/users",
+    },
+  }),
 }).single("avatar");
 
 filesRouter.post("/:productId", cloudUploder, async (req, res, next) => {
