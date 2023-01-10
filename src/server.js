@@ -43,7 +43,7 @@ server.use(express.static(publicFolderPath));
 server.use(loggerMiddleware);
 server.use(express.json());
 server.use("/products", filesRouter);
-
+console.log("pol");
 server.use("/products", productsRouter);
 server.use("/products", reviewsRouter);
 
