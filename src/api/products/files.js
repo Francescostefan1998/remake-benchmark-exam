@@ -24,7 +24,7 @@ filesRouter.post("/:productId", cloudUploder, async (req, res, next) => {
   try {
     const originalFileExtension = extname(req.file.originalname);
     const fileName = req.params.productId + originalFileExtension;
-
+    console.log(req.file);
     await saveProductsAvatar(fileName, req.file.buffer);
     const url = `http://localhost:3001/img/products/${fileName}`;
     console.log(url);
