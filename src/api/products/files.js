@@ -6,27 +6,28 @@ import {
   getProducts,
   writeProducts,
 } from "../../lib/fs-tools.js";
+import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from "multer-storage-cloudinary";
 
 const filesRouter = express.Router();
+const cloudUploder = multer({
+  storage: new CloudinaryStorage({ cloudinary }).single("avatar"),
+});
+filesRouter.post("/:productId", cloudUploder, async (req, res, next) => {
+  try {
+    const originalFileExtension = extname(req.file.originalname);
+    const fileName = req.params.productId + originalFileExtension;
 
-filesRouter.post(
-  "/:productId",
-  multer().single("avatar"),
-  async (req, res, next) => {
-    try {
-      const originalFileExtension = extname(req.file.originalname);
-      const fileName = req.params.productId + originalFileExtension;
-
-      await saveProductsAvatar(fileName, req.file.buffer);
-      const url = `http://localhost:3001/img/products/${fileName}`;
-      console.log(url);
-      const products = await getProducts();
-      const index = products.findIndex(
-        (product) => product.id === req.params.productId
-      );
-      if (index !== -1) {
-        const oldProduct = products[index];
-        /*const pictures = {
+    await saveProductsAvatar(fileName, req.file.buffer);
+    const url = `http://localhost:3001/img/products/${fileName}`;
+    console.log(url);
+    const products = await getProducts();
+    const index = products.findIndex(
+      (product) => product.id === req.params.productId
+    );
+    if (index !== -1) {
+      const oldProduct = products[index];
+      /*const pictures = {
           imageUrl: url,
         };
 
@@ -36,23 +37,22 @@ filesRouter.post(
           imageUrl: url,
         };*/
 
-        const updateProduct = {
-          ...oldProduct,
-          imageUrl: url,
-          updatedAt: new Date(),
-        };
+      const updateProduct = {
+        ...oldProduct,
+        imageUrl: url,
+        updatedAt: new Date(),
+      };
 
-        products[index] = updateProduct;
-        await writeProducts(products);
-        res.send("file uploaded in the proper field");
-      } else {
-        res.send("File upload !");
-      }
-    } catch (error) {
-      next(error);
+      products[index] = updateProduct;
+      await writeProducts(products);
+      res.send("file uploaded in the proper field");
+    } else {
+      res.send("File upload !");
     }
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 filesRouter.post(
   "/:productId/multiple",
