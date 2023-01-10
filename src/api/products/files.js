@@ -10,9 +10,11 @@ import { v2 as cloudinary } from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 
 const filesRouter = express.Router();
+
 const cloudUploder = multer({
-  storage: new CloudinaryStorage({ cloudinary }).single("avatar"),
-});
+  storage: new CloudinaryStorage({ cloudinary }),
+}).single("avatar");
+
 filesRouter.post("/:productId", cloudUploder, async (req, res, next) => {
   try {
     const originalFileExtension = extname(req.file.originalname);
