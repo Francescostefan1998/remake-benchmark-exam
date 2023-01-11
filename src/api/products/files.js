@@ -112,14 +112,43 @@ const cloudUploder = multer({
     },
   }),
 }).single("avatar");
-
 filesRouter.post("/:productId", cloudUploder, async (req, res, next) => {
+  try {
+    const products = await getProducts();
+    const index = products.findIndex(
+      (product) => product.id === req.params.productId
+    );
+    console.log("REQ FILE: ", req.file);
+    const oldProduct = products[index];
+    const url =
+      "https://res.cloudinary.com/dkyzwols6/image/upload/v1673463061/" +
+      req.file.filename +
+      req.file.originalname;
+    console.log(url);
+    const updateProduct = {
+      ...oldProduct,
+      imageUrl: req.file.path,
+      updatedAt: new Date(),
+    };
+    products[index] = updateProduct;
+
+    await writeProducts(products);
+    res.send("file uploaded in the proper field");
+    // 1. upload on Cloudinary happens automatically
+    // 2. req.file contains the path which is the url where to find that picture
+    // 3. update the resource by adding the path to it
+  } catch (error) {
+    next(error);
+  }
+});
+filesRouter.post("/1", cloudUploder, async (req, res, next) => {
+  console.log(req.file);
   try {
     const originalFileExtension = extname(req.file.originalname);
     const fileName = req.params.productId + originalFileExtension;
     console.log(req.file);
     await saveProductsAvatar(fileName, req.file.buffer);
-    const url = `http://localhost:3001/img/products/${fileName}`;
+    const url = `https://res.cloudinary.com/dkyzwols6/image/upload/v1673460333/fs0422/users/${fileName}`;
     console.log(url);
     const products = await getProducts();
     const index = products.findIndex(
@@ -153,24 +182,6 @@ filesRouter.post("/:productId", cloudUploder, async (req, res, next) => {
     next(error);
   }
 });
-
-filesRouter.post(
-  "/:productId/multiple",
-  multer().array("avatars"),
-  async (req, res, next) => {
-    try {
-      console.log("Files: ", req.files);
-      await Promise.all(
-        req.files.map((file) =>
-          saveProductsAvatar(file.originalname, file.buffer)
-        )
-      );
-      res.send(" files uploaded ");
-    } catch (error) {
-      next(error);
-    }
-  }
-);
 
 filesRouter.get("/productsJSON", (req, res, next) => {
   try {
