@@ -20,6 +20,8 @@
   },
   "homepage": "https://github.com/Francescostefan1998/remake-benchmark-exam#readme",
   "dependencies": {
+    "@ionic-native/file": "^5.36.0",
+    "@ionic-native/file-opener": "^5.36.0",
     "cloudinary": "^1.33.0",
     "cors": "^2.8.5",
     "express": "^4.18.2",
@@ -31,11 +33,14 @@
     "http-errors": "^2.0.0",
     "multer": "^1.4.5-lts.1",
     "multer-storage-cloudinary": "^4.0.0",
-    "uniqid": "^5.4.0"
+    "pdfmake": "^0.2.7",
+    "uniqid": "^5.4.0",
+    "zlib": "^1.0.5"
   },
   "devDependencies": {
     "dotenv": "^16.0.3",
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.20",
+    "request": "^2.88.2"
   },
   "description": ""
 }
