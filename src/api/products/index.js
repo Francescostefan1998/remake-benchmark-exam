@@ -140,7 +140,7 @@ productsRouter.post("/register/user", async (req, res, next) => {
   try {
     const { email } = req.body;
     await sendRegistrationEmail(email);
-    res.send;
+    res.send("Mail sended");
   } catch (error) {
     next(error);
   }
