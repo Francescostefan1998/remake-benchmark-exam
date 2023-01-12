@@ -3,7 +3,8 @@ import { dirname, join } from "path";
 import fs from "fs-extra";
 import { Console } from "console";
 
-const { readJSON, writeJSON, writeFile, createReadStream } = fs;
+const { readJSON, writeJSON, writeFile, createReadStream, createWriteStream } =
+  fs;
 
 const dataFolderPath = join(dirname(fileURLToPath(import.meta.url)), "../data");
 
@@ -23,3 +24,5 @@ export const saveProductsAvatar = (fileName, conteAsABuffer) =>
   writeFile(join(publicFolderPath, fileName), conteAsABuffer);
 export const getProductsJSONReadableStream = () =>
   createReadStream(productsJSONPath);
+export const pdfWritableStreamPDF = (filename) =>
+  createWriteStream(join(dataFolderPath, filename));

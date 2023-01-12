@@ -5,12 +5,14 @@ import { checksProductsSchema, triggerBadRequest } from "./validator.js";
 //import filesRouter from "./files.js";
 import multer from "multer";
 import { extname } from "path";
+import { sendRegistrationEmail } from "../../lib/email-tools.js";
 import {
   saveProductsAvatar,
   getProducts,
   writeProducts,
 } from "../../lib/fs-tools.js";
-
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 const { NotFound, Unauthorized, BadRequest } = httpErrors;
 
 const productsRouter = express.Router();
@@ -129,6 +131,16 @@ productsRouter.delete("/:productId", async (req, res, next) => {
     } else {
       next(NotFound(`Product with id ${req.params.productkId} not found!`));
     }
+  } catch (error) {
+    next(error);
+  }
+});
+
+productsRouter.post("/register/user", async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    await sendRegistrationEmail(email);
+    res.send;
   } catch (error) {
     next(error);
   }

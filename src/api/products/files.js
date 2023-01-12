@@ -5,13 +5,21 @@ import {
   saveProductsAvatar,
   getProducts,
   writeProducts,
+  pdfWritableStreamPDF,
+  getProductsJSONReadableStream,
 } from "../../lib/fs-tools.js";
+import {
+  getPDFReadableStream,
+  asyncPDFGeneration,
+  getPDFReadableStreamListOfProducts,
+} from "../../lib/pdf-tools.js";
 import { v2 as cloudinary } from "cloudinary";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
-import { getProductsJSONReadableStream } from "../../lib/fs-tools.js";
 import { pipeline } from "stream"; //
 import { createGzip } from "zlib";
 import PdfPrinter from "pdfmake";
+import json2csv from "json2csv";
+
 const fonts = {
   Roboto: {
     normal: "Helvetica",
@@ -203,7 +211,7 @@ filesRouter.get("/productsJSON", (req, res, next) => {
     next(error);
   }
 });
-filesRouter.get("/productsPDF", (req, res, next) => {
+filesRouter.get("/productsPDF", async (req, res, next) => {
   try {
     // SOURCES (file on disk, http request,...) --> DESTINATIONS (file on disk, terminal, http response)
 
@@ -213,11 +221,61 @@ filesRouter.get("/productsPDF", (req, res, next) => {
       "Content-Disposition",
       "attachment; filename=products3.json.pdf"
     );
-    const source = pdfReadableStream;
+    const products = await getProducts();
+    const source = getPDFReadableStreamListOfProducts(products);
     const destination = res;
     pipeline(source, destination, (err) => {
       if (err) console.log(err);
     });
+  } catch (error) {
+    next(error);
+  }
+});
+
+filesRouter.get("/productsPDFVerify", async (req, res, next) => {
+  try {
+    // SOURCES (file on disk, http request,...) --> DESTINATIONS (file on disk, terminal, http response)
+
+    // SOURCE (Readable Stream on books.json file) --> DESTINATION (http response)
+
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=products3.json.pdf"
+    );
+    const prod = await getProducts();
+    const source = getPDFReadableStream(prod);
+    const destination = res;
+    pipeline(source, destination, (err) => {
+      if (err) console.log(err);
+      else console.log("STREAM ENDED SUCCESSFULLY");
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+filesRouter.get("/productsCSV", (req, res, next) => {
+  try {
+    res.setHeader("Content-Disposition", "attachment; filename=books.csv");
+    // SOURCE (readable stream on books.json) --> TRANSFORM (json into csv) --> DESTINATION (response)
+    const source = getProductsJSONReadableStream();
+    const transform = new json2csv.Transform({
+      fields: ["asin", "title", "category"],
+    });
+    const destination = res;
+    pipeline(source, transform, destination, (err) => {
+      if (err) console.log(err);
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+filesRouter.get("/asyncPDF", async (req, res, next) => {
+  try {
+    const products = await getProducts();
+    await asyncPDFGeneration(products);
+    res.send();
   } catch (error) {
     next(error);
   }
